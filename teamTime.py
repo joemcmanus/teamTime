@@ -15,10 +15,13 @@ def makeTime(staffName, staffZone):
     staffTime=datetime.now(timezone(staffZone)).strftime('%Y-%m-%d %H:%M')
     return staffTime
 
-with open(args.src, mode='r') as infile:
-    reader = csv.reader(infile)
-    staff={rows[0]:rows[1] for rows in reader } 
-    
+try: 
+    with open(args.src, mode='r') as infile:
+        reader = csv.reader(infile)
+        staff={rows[0]:rows[1] for rows in reader } 
+except:
+    print("ERROR: Unable to read {}".format(args.src))
+    quit()
 
 if args.name: 
     staffName=args.name.capitalize()
