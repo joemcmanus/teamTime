@@ -1,18 +1,23 @@
-name: teamTime
+name: teamtime
 version: 1a
 summary: A script to keep track of time for a globally distributed team.
 description: |
  A script to keep track of time for globaly distributed team.
 grade: stable
 confinement: strict
-
+base: core18
 
 
 apps:
-  ircminer:
+  teamtime:
     command: bin/teamTime.py
+    environment: 
+       XAUTHORITY : $HOME/.Xauthority
     plugs:
     - home
+    - network
+    - network-bind
+    - browser-support
 
 parts:
   teamtime:
@@ -35,3 +40,4 @@ parts:
     plugin: nil
     stage-packages:
     - python3
+    - dbus-x11
