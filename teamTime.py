@@ -1,12 +1,28 @@
 #!/usr/bin/env python3
+# File    : teamTime.py
+# Author  : Joe McManus josephmc@alumni.cmu.edu
+# Version : 0.1  09/25/2019 Joe McManus
+# Copyright (C) 2019 Joe McManus
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 
 from datetime import datetime
 from pytz import timezone
 from prettytable import PrettyTable
 import argparse
 import csv
-
-
 
 
 parser = argparse.ArgumentParser(description='Time Table')
@@ -25,11 +41,7 @@ def getLocation(staffCity):
     return((location.latitude), (location.longitude))
 
 
-try: 
-    with open(args.src, mode='r') as infile:
-        reader = csv.reader(infile)
-        staff={rows[0]:rows[1] for rows in reader } 
-except:
+if not os.path.isfile(args.src):
     print("ERROR: Unable to read {}".format(args.src))
     quit()
 
@@ -44,16 +56,15 @@ if args.map:
         import pandas as pd
         from geopy.geocoders import Nominatim
         import plotly.graph_objects as go
-
-    except: 
-        print("ERROR: Basemap not found, can be downloaed:")
-        print("ERROR: wget https://github.com/matplotlib/basemap/archive/v1.1.0.tar.gz") 
+    except:
+        print("Missing mapping libs, try pip3 install pandas plotly geopy")
         quit()
 
-
+#Lists to hold data for maps
 staffLat=[]
 staffLon=[]
 labels=[]
+
 table=PrettyTable()
 table.add_row(["now()", datetime.now().strftime('%Y-%m-%d %H:%M')])
 table.field_names=["Person", "Local Time"]
@@ -75,12 +86,14 @@ print(table)
 if not args.map:
     quit()
 
+#Convert lists to Pandas data frames
 df= pd.DataFrame(list(zip(staffLat,staffLon,labels)), columns=['lat', 'lon','labels'])
+
 #create the map
 fig = go.Figure(data=go.Scattergeo( 
-    lon=df['lon'], lat=df['lat'],text=df['labels'],mode='markers'))
+    lon=df['lon'], lat=df['lat'],text=df['labels'],mode='markers',marker_size=12, marker_line_width=2)
 
-fig.update_layout( title='Team Time', geo_scope='world',)
+fig.update_layout(title='Team Time',)
 
 fig.show()
 
