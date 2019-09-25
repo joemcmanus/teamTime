@@ -41,12 +41,10 @@ if args.name:
 
 if args.map:
     try:
-        from mpl_toolkits.basemap import Basemap
-        import numpy as np
-        import matplotlib.pyplot as plt
         import pandas as pd
         from geopy.geocoders import Nominatim
-        import mplcursors
+        import plotly.graph_objects as go
+
     except: 
         print("ERROR: Basemap not found, can be downloaed:")
         print("ERROR: wget https://github.com/matplotlib/basemap/archive/v1.1.0.tar.gz") 
@@ -77,18 +75,12 @@ print(table)
 if not args.map:
     quit()
 
-data= pd.DataFrame(list(zip(staffLat,staffLon,labels)), columns=['lat', 'lon','labels'])
-
+df= pd.DataFrame(list(zip(staffLat,staffLon,labels)), columns=['lat', 'lon','labels'])
 #create the map
-m=Basemap(llcrnrlon=-160, llcrnrlat=-75,urcrnrlon=160,urcrnrlat=80)
-m.drawmapboundary(fill_color='#A6CAE0', linewidth=0)
-m.fillcontinents(color='grey', alpha=0.7, lake_color='grey')
-m.drawcoastlines(linewidth=0.1, color="white")
+fig = go.Figure(data=go.Scattergeo( 
+    lon=df['lon'], lat=df['lat'],text=df['labels'],mode='markers'))
 
-#Add a marker from the lat/lon
-m.plot(data['lon'], data['lat'], linestyle='none', marker="o", markersize=16, alpha=0.6, c="orange", markeredgecolor="black", markeredgewidth=1)
-mplcursors.cursor(hover=True)
+fig.update_layout( title='Team Time', geo_scope='world',)
 
-
-plt.show()
+fig.show()
 
