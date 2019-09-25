@@ -21,6 +21,7 @@
 from datetime import datetime
 from pytz import timezone
 from prettytable import PrettyTable
+from os import path
 import argparse
 import csv
 
@@ -41,7 +42,7 @@ def getLocation(staffCity):
     return((location.latitude), (location.longitude))
 
 
-if not os.path.isfile(args.src):
+if not path.isfile(args.src):
     print("ERROR: Unable to read {}".format(args.src))
     quit()
 
@@ -91,7 +92,7 @@ df= pd.DataFrame(list(zip(staffLat,staffLon,labels)), columns=['lat', 'lon','lab
 
 #create the map
 fig = go.Figure(data=go.Scattergeo( 
-    lon=df['lon'], lat=df['lat'],text=df['labels'],mode='markers',marker_size=12, marker_line_width=2)
+    lon=df['lon'], lat=df['lat'],text=df['labels'],mode='markers',marker_size=12, marker_line_width=2))
 
 fig.update_layout(title='Team Time',)
 

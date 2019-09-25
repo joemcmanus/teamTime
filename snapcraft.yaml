@@ -1,0 +1,37 @@
+name: teamTime
+version: 1a
+summary: A script to keep track of time for a globally distributed team.
+description: |
+ A script to keep track of time for globaly distributed team.
+grade: stable
+confinement: strict
+
+
+
+apps:
+  ircminer:
+    command: bin/teamTime.py
+    plugs:
+    - home
+
+parts:
+  teamtime:
+    plugin: python
+    python-version: python3
+    python-packages:
+    - matplotlib
+    - pandas
+    - pandas-ext
+    - geopy
+    - plotly
+    - pytz
+    - prettytable
+
+  wrapper:
+    plugin: dump
+    source: files/
+
+  mypackages:
+    plugin: nil
+    stage-packages:
+    - python3
