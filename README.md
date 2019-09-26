@@ -1,9 +1,16 @@
 # teamTime
 ----
 
-Team Time is a tool to aid solve the problem of keeping track of time of a globably distributed team. 
+teamTime is a tool to aid the problem of keeping track of time for a globably distributed team. 
 
-You will need to put the name of your teammates in staff.csv using the format name, timezone, city . 
+You will need to put the name of your teammates in staff.csv using the format name, timezone, city. Take a look at https://raw.githubusercontent.com/joemcmanus/teamTime/master/example.csv
+
+    Alice,US/Eastern,New York New York
+    Bob,US/Central,Chicago Illinois
+    Charlie,Africa/Abidjan, Abidjan
+    Doug,America/Tijuana, Tijuana Mexico
+    Ed,America/Winnipeg, Winnipeg
+    Frank,Asia/Dubai,Dubai
 
 Questions/Feedback/Feature Requests? Please let me know. 
 
