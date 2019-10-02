@@ -1,7 +1,7 @@
 # teamTime
 ----
 
-teamTime is a tool to aid the problem of keeping track of time for a globably distributed team. 
+teamTime is a tool to aid the problem of keeping track of time for a globally distributed team. 
 
 You will need to put the name of your teammates in staff.csv using the format name, timezone, city. Take a look at https://raw.githubusercontent.com/joemcmanus/teamTime/master/example.csv
 
@@ -42,6 +42,13 @@ To simply print a table of your team run ./teamTime.py
     |  now()  | 2019-09-25 10:16 |
     +---------+------------------+
 
+To search for just Bob run ./teamTime.py --name=Bob
+
+    +--------+------------------+
+    | Person |    Local Time    |
+    +--------+------------------+
+    | Bob    | 2019-10-02 15:37 |
+    +--------+------------------+
 
 To create a map run ./teamTime.py --map 
 

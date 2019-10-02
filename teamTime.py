@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # File    : teamTime.py
 # Author  : Joe McManus josephmc@alumni.cmu.edu
-# Version : 0.1  09/25/2019 Joe McManus
+# Version : 0.2  10/02/2019 Joe McManus
 # Copyright (C) 2019 Joe McManus
 
 # This program is free software: you can redistribute it and/or modify
@@ -47,10 +47,7 @@ if not path.isfile(args.src):
     quit()
 
 if args.name: 
-    staffName=args.name.capitalize()
-    if staffName in staff:
-        print(makeTime(staffName, staff[staffName]))
-    quit()
+    fixedName=args.name.capitalize()
 
 if args.map:
     try:
@@ -61,21 +58,22 @@ if args.map:
         print("Missing mapping libs, try pip3 install pandas plotly geopy")
         quit()
 
-#Lists to hold data for maps
-staffLat=[]
-staffLon=[]
-labels=[]
-
 table=PrettyTable()
-table.add_row(["now()", datetime.now().strftime('%Y-%m-%d %H:%M')])
 table.field_names=["Person", "Local Time"]
+if not args.name:
+    table.add_row(["now()", datetime.now().strftime('%Y-%m-%d %H:%M')])
+
 with open(args.src, mode='r') as infile:
     reader = csv.reader(infile)
     for row in reader:
         staffName=row[0]
         staffTime=makeTime(row[0], row[1])
         staffCity=row[2].strip()
-        table.add_row([staffName, staffTime])
+        if args.name:
+            if fixedName == staffName:
+                table.add_row([staffName, staffTime])
+        else:
+            table.add_row([staffName, staffTime])
         if args.map:
             latitude, longitude=getLocation(staffCity)
             staffLat.append(latitude)
