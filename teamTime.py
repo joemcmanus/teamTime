@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # File    : teamTime.py
 # Author  : Joe McManus josephmc@alumni.cmu.edu
-# Version : 0.2  10/02/2019 Joe McManus
+# Version : 0.5  10/02/2019 Joe McManus
 # Copyright (C) 2019 Joe McManus
 
 # This program is free software: you can redistribute it and/or modify
@@ -62,6 +62,11 @@ table=PrettyTable()
 table.field_names=["Person", "Local Time"]
 if not args.name:
     table.add_row(["now()", datetime.now().strftime('%Y-%m-%d %H:%M')])
+
+#Lists to hold data for maps
+staffLat=[]
+staffLon=[]
+labels=[]
 
 with open(args.src, mode='r') as infile:
     reader = csv.reader(infile)
