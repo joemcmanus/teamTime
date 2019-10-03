@@ -1,8 +1,8 @@
 name: teamtime
-version: 1a
+version: 5a
 summary: A script to keep track of time for a globally distributed team.
 description: |
- A script to keep track of time for globaly distributed team.
+ A script to keep track of time for globally distributed team.
 grade: stable
 confinement: strict
 base: core18
