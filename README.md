@@ -14,6 +14,19 @@ You will need to put the name of your teammates in staff.csv using the format na
 
 Questions/Feedback/Feature Requests? Please let me know. 
 
+#Installation 
+----
+The simplest way to install teamtime is to use the snap
+
+    sudo snap install teamtime 
+
+As a note if you are using the snap to avoid typing the path to the CSV file you might want to make an alias: 
+
+    alias teamtime='teamtime --src=/home/foo/staff.csv'
+
+
+Otherwise clone the repo and install the dependencies pandas, plotly, prettytable and geopy. 
+
 # Usage 
 ----
 
