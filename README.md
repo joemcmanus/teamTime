@@ -38,6 +38,7 @@ Otherwise clone the repo and install the dependencies pandas, plotly, prettytabl
     optional arguments:
       -h, --help   show this help message and exit
       --name NAME  Optional name to search for
+      --comp COMP  Compare times, use --name and --comp together
       --src SRC    Optional src file, defaults to staff.csv
       --map        Draw map	
 
@@ -62,6 +63,15 @@ To search for just Bob run ./teamTime.py --name=Bob
     +--------+------------------+
     | Bob    | 2019-10-02 15:37 |
     +--------+------------------+
+
+To convert a local time to another time in a person's time zone use --comp. This helps when you are trying to figure out when to schedule a call.
+
+    $ ./teamTime.py --name=andy --comp=15:00 
+    +--------+------------------+---------------------+
+    | Person |    Their Time    |      Your Time      |
+    +--------+------------------+---------------------+
+    |  Andy  | 2019-10-18 07:30 | 2019-10-17 15:00:00 |
+    +--------+------------------+---------------------+
 
 To create a map run ./teamTime.py --map 
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # File    : teamTime.py
 # Author  : Joe McManus josephmc@alumni.cmu.edu
-# Version : 0.5  10/02/2019 Joe McManus
+# Version : 0.6  10/17/2019 Joe McManus
 # Copyright (C) 2019 Joe McManus
 
 # This program is free software: you can redistribute it and/or modify
@@ -19,15 +19,19 @@
 
 
 from datetime import datetime
+from time import time
 from pytz import timezone
+import pytz
 from prettytable import PrettyTable
 from os import path
 import argparse
 import csv
+import re
 
 
 parser = argparse.ArgumentParser(description='Time Table')
 parser.add_argument('--name', help="Optional name to search for", action="store")
+parser.add_argument('--comp', help="Compare times, use name and comp together", action="store")
 parser.add_argument('--src', help="Optional src file, defaults to staff.csv", action="store", default="staff.csv")
 parser.add_argument('--map', help="Draw map", action="store_true")
 args=parser.parse_args()
@@ -35,6 +39,15 @@ args=parser.parse_args()
 def makeTime(staffName, staffZone):
     staffTime=datetime.now(timezone(staffZone)).strftime('%Y-%m-%d %H:%M')
     return staffTime
+
+def compareTime(staffZone):
+    now=datetime.now()
+    getHour, getMinute=args.comp.split(':')
+    localTime=datetime(now.year, now.month, now.day, int(getHour), int(getMinute))
+    remoteTime=localTime.astimezone(timezone(staffZone)).strftime('%Y-%m-%d %H:%M')
+    return localTime, remoteTime
+    
+
 
 def getLocation(staffCity):
     geolocator = Nominatim(user_agent='teamTime')
@@ -49,6 +62,12 @@ if not path.isfile(args.src):
 if args.name: 
     fixedName=args.name.capitalize()
 
+if args.comp:
+    pattern=re.compile("\d{1,2}:\d{2}")
+    if not pattern.match(args.comp):
+        print("ERROR: Please use 24 hour time format, i.e. --comp 10:00") 
+        quit()
+
 if args.map:
     try:
         import pandas as pd
@@ -59,8 +78,10 @@ if args.map:
         quit()
 
 table=PrettyTable()
-table.field_names=["Person", "Local Time"]
-if not args.name:
+if args.comp:
+    table.field_names=["Person", "Their Time", "Your Time"]
+else:
+    table.field_names=['Person', "Local Time"]
     table.add_row(["now()", datetime.now().strftime('%Y-%m-%d %H:%M')])
 
 #Lists to hold data for maps
@@ -74,9 +95,14 @@ with open(args.src, mode='r') as infile:
         staffName=row[0]
         staffTime=makeTime(row[0], row[1])
         staffCity=row[2].strip()
+        staffZone=row[1]
         if args.name:
             if fixedName == staffName:
-                table.add_row([staffName, staffTime])
+                if not args.comp:
+                    table.add_row([staffName, staffTime])
+                if args.comp:
+                    localTime, remoteTime=compareTime(staffZone)
+                    table.add_row([staffName, remoteTime, localTime])
         else:
             table.add_row([staffName, staffTime])
         if args.map:
@@ -85,7 +111,9 @@ with open(args.src, mode='r') as infile:
             staffLon.append(longitude)
             labels.append(staffName + " " + staffTime)
 
-table.sortby = "Person"
+if not args.comp:
+    table.sortby = 'Person'
+
 print(table)
 if not args.map:
     quit()
