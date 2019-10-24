@@ -89,7 +89,7 @@ staffLat=[]
 staffLon=[]
 labels=[]
 
-with open(args.src, mode='r') as infile:
+with open(args.src, mode='r', encoding='utf-8', newline='') as infile:
     reader = csv.reader(infile)
     for row in reader:
         staffName=row[0]

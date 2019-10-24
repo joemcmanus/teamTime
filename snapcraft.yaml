@@ -1,5 +1,5 @@
 name: teamtime
-version: 7b
+version: 8a
 summary: A script to keep track of time for a globally distributed team.
 description: |
  A script to keep track of time for globally distributed team.
@@ -12,33 +12,28 @@ apps:
   teamtime:
     command: teamTime.py
     environment: 
-       XAUTHORITY : $HOME/.Xauthority
+       XAUTHORITY: $HOME/.Xauthority
     plugs:
-    - home
-    - network
-    - network-bind
-    - browser-support
-    - desktop
+      - home
+      - network
+      - network-bind
+      - browser-support
+      - desktop
 
 parts:
   teamtime:
     plugin: python
-    python-version: python3
     python-packages:
-    - matplotlib
-    - pandas
-    - pandas-ext
-    - geopy
-    - plotly
-    - pytz
-    - prettytable
+      - matplotlib
+      - pandas
+      - pandas-ext
+      - geopy
+      - plotly
+      - pytz
+      - prettytable
+    stage-packages:
+      - dbus-x11
 
-  wrapper:
+  teamtime-script:
     plugin: dump
     source: .
-
-  mypackages:
-    plugin: nil
-    stage-packages:
-    - python3
-    - dbus-x11
