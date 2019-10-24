@@ -1,5 +1,5 @@
 name: teamtime
-version: 5b
+version: 7b
 summary: A script to keep track of time for a globally distributed team.
 description: |
  A script to keep track of time for globally distributed team.
@@ -10,7 +10,7 @@ base: core18
 
 apps:
   teamtime:
-    command: bin/teamTime.py
+    command: teamTime.py
     environment: 
        XAUTHORITY : $HOME/.Xauthority
     plugs:
@@ -35,7 +35,7 @@ parts:
 
   wrapper:
     plugin: dump
-    source: files/
+    source: .
 
   mypackages:
     plugin: nil
