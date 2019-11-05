@@ -34,6 +34,8 @@ parser.add_argument('--name', help="Optional name to search for", action="store"
 parser.add_argument('--comp', help="Compare times, use name and comp together", action="store")
 parser.add_argument('--src', help="Optional src file, defaults to staff.csv", action="store", default="staff.csv")
 parser.add_argument('--map', help="Draw map", action="store_true")
+parser.add_argument('--sort', help="Field to sort by <time|name>. Defaults to name.", action="store", default="name")
+parser.add_argument('--rev', help="Reverse the sort order", action="store_true")
 args=parser.parse_args()
 
 def makeTime(staffName, staffZone):
@@ -67,6 +69,10 @@ if args.comp:
     if not pattern.match(args.comp):
         print("ERROR: Please use 24 hour time format, i.e. --comp 10:00") 
         quit()
+
+if not args.sort in ['name', 'time']:
+    print("ERROR: Please specify a sort argument of 'name' or 'time'") 
+    quit()
 
 if args.map:
     try:
@@ -112,7 +118,12 @@ with open(args.src, mode='r', encoding='utf-8', newline='') as infile:
             labels.append(staffName + " " + staffTime)
 
 if not args.comp:
-    table.sortby = 'Person'
+    if args.sort == 'name':
+        table.sortby = 'Person'
+    else:
+        table.sortby = 'Local Time'
+    if args.rev:
+        table.reversesort = True
 
 print(table)
 if not args.map:
