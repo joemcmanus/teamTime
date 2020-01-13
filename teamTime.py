@@ -90,6 +90,8 @@ else:
     table.field_names=['Person', "Local Time"]
     table.add_row(["now()", datetime.now().strftime('%Y-%m-%d %H:%M')])
 
+table.align["Person"] = 'l'
+
 #Lists to hold data for maps
 staffLat=[]
 staffLon=[]
