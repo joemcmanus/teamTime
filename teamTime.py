@@ -125,7 +125,8 @@ if not args.comp:
     if args.rev:
         table.reversesort = True
 
-print(table)
+with open('/dev/stdout', 'w', encoding='utf-8') as stdout:
+    stdout.write(str(table) + '\n')
 if not args.map:
     quit()
 
