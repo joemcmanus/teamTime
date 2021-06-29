@@ -111,6 +111,9 @@ with open(args.src, mode='r', encoding='utf-8', newline='') as infile:
                 if args.comp:
                     localTime, remoteTime=compareTime(staffZone)
                     table.add_row([staffName, remoteTime, localTime])
+        elif args.comp:
+            localTime, remoteTime=compareTime(staffZone)
+            table.add_row([staffName, remoteTime, localTime])
         else:
             table.add_row([staffName, staffTime])
         if args.map:
@@ -119,13 +122,15 @@ with open(args.src, mode='r', encoding='utf-8', newline='') as infile:
             staffLon.append(longitude)
             labels.append(staffName + " " + staffTime)
 
-if not args.comp:
-    if args.sort == 'name':
-        table.sortby = 'Person'
+if args.sort == 'name':
+    table.sortby = 'Person'
+else:
+    if args.comp:
+        table.sortby = 'Their Time'
     else:
         table.sortby = 'Local Time'
-    if args.rev:
-        table.reversesort = True
+if args.rev:
+    table.reversesort = True
 
 with open('/dev/stdout', 'w', encoding='utf-8') as stdout:
     stdout.write(str(table) + '\n')
