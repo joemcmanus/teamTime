@@ -104,23 +104,21 @@ with open(args.src, mode='r', encoding='utf-8', newline='') as infile:
         staffTime=makeTime(row[0], row[1])
         staffCity=row[2].strip()
         staffZone=row[1]
-        if args.name:
-            if fixedName == staffName:
-                if not args.comp:
-                    table.add_row([staffName, staffTime])
-                if args.comp:
-                    localTime, remoteTime=compareTime(staffZone)
-                    table.add_row([staffName, remoteTime, localTime])
-        elif args.comp:
-            localTime, remoteTime=compareTime(staffZone)
-            table.add_row([staffName, remoteTime, localTime])
-        else:
-            table.add_row([staffName, staffTime])
+
         if args.map:
             latitude, longitude=getLocation(staffCity)
             staffLat.append(latitude)
             staffLon.append(longitude)
             labels.append(staffName + " " + staffTime)
+
+        if args.name and fixedName != staffName:
+            continue
+
+        if args.comp:
+            localTime, remoteTime=compareTime(staffZone)
+            table.add_row([staffName, remoteTime, localTime])
+        else:
+            table.add_row([staffName, staffTime])
 
 if args.sort == 'name':
     table.sortby = 'Person'
