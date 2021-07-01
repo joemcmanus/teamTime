@@ -19,9 +19,7 @@
 
 
 from datetime import datetime
-from time import time
 from pytz import timezone
-import pytz
 from prettytable import PrettyTable
 from os import path
 import argparse
