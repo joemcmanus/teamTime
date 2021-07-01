@@ -54,6 +54,7 @@ class TeamMember:
     def longitude(self):
         return self._location.longitude
 
+
 def get_current_formatted_time(staffZone, format_="%Y-%m-%d %H:%M"):
     staffTime = datetime.now(timezone(staffZone)).strftime(format_)
     return staffTime
@@ -87,10 +88,30 @@ def compareTime(staffZone):
     return localTime, remoteTime
 
 
-def getLocation(staffCity):
-    geolocator = Nominatim(user_agent="teamTime")
-    location = geolocator.geocode(staffCity)
-    return ((location.latitude), (location.longitude))
+def show_map():
+    team_geo_data = [
+        (tm.latitude, tm.longitude, f"{tm.name} {tm.time}") for tm in team_members
+    ]
+    # Convert lists to Pandas data frames
+    df = pd.DataFrame(team_geo_data, columns=["lat", "lon", "labels"])
+
+    # create the map
+    fig = go.Figure(
+        data=go.Scattergeo(
+            lon=df["lon"],
+            lat=df["lat"],
+            text=df["labels"],
+            mode="markers",
+            marker_size=12,
+            marker_line_width=2,
+        )
+    )
+
+    fig.update_layout(
+        title="Team Time",
+    )
+
+    fig.show()
 
 
 if not path.isfile(args.src):
@@ -128,24 +149,15 @@ else:
 
 table.align["Person"] = "l"
 
-# Lists to hold data for maps
-staffLat = []
-staffLon = []
-labels = []
 
 def build_table_rows(team_members: Iterable[TeamMember], table: PrettyTable):
     for tm in team_members:
-        if args.map:
-            latitude, longitude = getLocation(tm.city)
-            staffLat.append(latitude)
-            staffLon.append(longitude)
-            labels.append(tm.name + " " + tm.time)
-
         if args.comp:
             localTime, remoteTime = compareTime(tm.timezone)
             table.add_row([tm.name, remoteTime, localTime])
         else:
             table.add_row([tm.name, tm.time])
+
 
 with open(args.src, mode="r", encoding="utf-8", newline="") as infile:
     reader = csv.reader(infile)
@@ -168,28 +180,6 @@ if args.rev:
 
 with open("/dev/stdout", "w", encoding="utf-8") as stdout:
     stdout.write(str(table) + "\n")
-if not args.map:
-    quit()
 
-# Convert lists to Pandas data frames
-df = pd.DataFrame(
-    list(zip(staffLat, staffLon, labels)), columns=["lat", "lon", "labels"]
-)
-
-# create the map
-fig = go.Figure(
-    data=go.Scattergeo(
-        lon=df["lon"],
-        lat=df["lat"],
-        text=df["labels"],
-        mode="markers",
-        marker_size=12,
-        marker_line_width=2,
-    )
-)
-
-fig.update_layout(
-    title="Team Time",
-)
-
-fig.show()
+if args.map:
+    show_map()
