@@ -27,6 +27,7 @@ from os import path
 import argparse
 import csv
 import re
+from typing import Iterable, List
 
 
 parser = argparse.ArgumentParser(description="Time Table")
@@ -108,8 +109,7 @@ staffLat = []
 staffLon = []
 labels = []
 
-with open(args.src, mode="r", encoding="utf-8", newline="") as infile:
-    reader = csv.reader(infile)
+def build_table_rows(rows: Iterable[List], table: PrettyTable):
     for row in reader:
         staffName = row[0]
         staffTime = makeTime(row[0], row[1])
@@ -122,14 +122,19 @@ with open(args.src, mode="r", encoding="utf-8", newline="") as infile:
             staffLon.append(longitude)
             labels.append(staffName + " " + staffTime)
 
-        if args.name and fixedName != staffName:
-            continue
-
         if args.comp:
             localTime, remoteTime = compareTime(staffZone)
             table.add_row([staffName, remoteTime, localTime])
         else:
             table.add_row([staffName, staffTime])
+
+with open(args.src, mode="r", encoding="utf-8", newline="") as infile:
+    reader = csv.reader(infile)
+    if args.name:
+        filtered_rows = [row for row in reader if row[0] == fixedName]
+        build_table_rows(filtered_rows, table)
+    else:
+        build_table_rows(reader, table)
 
 if args.sort == "name":
     table.sortby = "Person"
