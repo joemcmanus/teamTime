@@ -34,12 +34,12 @@ class TeamMember:
     def __init__(self, csv_row: List):
         self.name = csv_row[0]
         self.timezone = csv_row[1]
-        self.time = makeTime(self.timezone)
+        self.time = get_current_formatted_time(self.timezone)
         self.city = csv_row[2].strip()
 
 
-def makeTime(staffZone):
-    staffTime = datetime.now(timezone(staffZone)).strftime("%Y-%m-%d %H:%M")
+def get_current_formatted_time(staffZone, format_="%Y-%m-%d %H:%M"):
+    staffTime = datetime.now(timezone(staffZone)).strftime(format_)
     return staffTime
 
 
