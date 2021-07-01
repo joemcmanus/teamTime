@@ -30,6 +30,19 @@ import re
 from typing import Iterable, List
 
 
+class TeamMember:
+    def __init__(self, csv_row: List):
+        self.name = csv_row[0]
+        self.timezone = csv_row[1]
+        self.time = makeTime(self.timezone)
+        self.city = csv_row[2].strip()
+
+
+def makeTime(staffZone):
+    staffTime = datetime.now(timezone(staffZone)).strftime("%Y-%m-%d %H:%M")
+    return staffTime
+
+
 parser = argparse.ArgumentParser(description="Time Table")
 parser.add_argument("--name", help="Optional name to search for", action="store")
 parser.add_argument("--comp", help="Compare times of team members.", action="store")
@@ -48,11 +61,6 @@ parser.add_argument(
 )
 parser.add_argument("--rev", help="Reverse the sort order", action="store_true")
 args = parser.parse_args()
-
-
-def makeTime(staffZone):
-    staffTime = datetime.now(timezone(staffZone)).strftime("%Y-%m-%d %H:%M")
-    return staffTime
 
 
 def compareTime(staffZone):
@@ -109,32 +117,28 @@ staffLat = []
 staffLon = []
 labels = []
 
-def build_table_rows(rows: Iterable[List], table: PrettyTable):
-    for row in reader:
-        staffName = row[0]
-        staffTime = makeTime(row[1])
-        staffCity = row[2].strip()
-        staffZone = row[1]
-
+def build_table_rows(team_members: Iterable[TeamMember], table: PrettyTable):
+    for tm in team_members:
         if args.map:
-            latitude, longitude = getLocation(staffCity)
+            latitude, longitude = getLocation(tm.city)
             staffLat.append(latitude)
             staffLon.append(longitude)
-            labels.append(staffName + " " + staffTime)
+            labels.append(tm.name + " " + tm.time)
 
         if args.comp:
-            localTime, remoteTime = compareTime(staffZone)
-            table.add_row([staffName, remoteTime, localTime])
+            localTime, remoteTime = compareTime(tm.timezone)
+            table.add_row([tm.name, remoteTime, localTime])
         else:
-            table.add_row([staffName, staffTime])
+            table.add_row([tm.name, tm.time])
 
 with open(args.src, mode="r", encoding="utf-8", newline="") as infile:
     reader = csv.reader(infile)
+    team_members = [TeamMember(row) for row in reader]
+
     if args.name:
-        filtered_rows = [row for row in reader if row[0] == fixedName]
-        build_table_rows(filtered_rows, table)
-    else:
-        build_table_rows(reader, table)
+        team_members = [tm for tm in team_members if tm.name == fixedName]
+
+    build_table_rows(team_members, table)
 
 if args.sort == "name":
     table.sortby = "Person"
