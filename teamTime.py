@@ -50,7 +50,7 @@ parser.add_argument("--rev", help="Reverse the sort order", action="store_true")
 args = parser.parse_args()
 
 
-def makeTime(staffName, staffZone):
+def makeTime(staffZone):
     staffTime = datetime.now(timezone(staffZone)).strftime("%Y-%m-%d %H:%M")
     return staffTime
 
@@ -112,7 +112,7 @@ labels = []
 def build_table_rows(rows: Iterable[List], table: PrettyTable):
     for row in reader:
         staffName = row[0]
-        staffTime = makeTime(row[0], row[1])
+        staffTime = makeTime(row[1])
         staffCity = row[2].strip()
         staffZone = row[1]
 
