@@ -36,7 +36,23 @@ class TeamMember:
         self.timezone = csv_row[1]
         self.time = get_current_formatted_time(self.timezone)
         self.city = csv_row[2].strip()
+        self._geo_location = None
 
+    @property
+    def _location(self):
+        if self._geo_location is None:
+            geolocator = Nominatim(user_agent="teamTime")
+            self._geo_location = geolocator.geocode(self.city)
+
+        return self._geo_location
+
+    @property
+    def latitude(self):
+        return self._location.latitude
+
+    @property
+    def longitude(self):
+        return self._location.longitude
 
 def get_current_formatted_time(staffZone, format_="%Y-%m-%d %H:%M"):
     staffTime = datetime.now(timezone(staffZone)).strftime(format_)
