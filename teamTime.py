@@ -54,9 +54,8 @@ class TeamMember:
         return self._location.longitude
 
 
-def get_current_formatted_time(staffZone, format_="%Y-%m-%d %H:%M"):
-    staffTime = datetime.now(timezone(staffZone)).strftime(format_)
-    return staffTime
+def get_current_formatted_time(staff_zone, format_="%Y-%m-%d %H:%M"):
+    return datetime.now(timezone(staff_zone)).strftime(format_)
 
 
 def main():
@@ -68,8 +67,8 @@ def main():
     team_members = load_team_members_from_file(args.src)
 
     if args.name:
-        fixedName = args.name.capitalize()
-        team_members = filter_team_members_by_name(team_members, fixedName)
+        fixed_name = args.name.capitalize()
+        team_members = filter_team_members_by_name(team_members, fixed_name)
 
     if args.comp:
         table.field_names = ["Person", "Their Time", "Your Time"]
@@ -147,8 +146,8 @@ def load_team_members_from_file(src_file_path):
     return team_members
 
 
-def filter_team_members_by_name(team_members, fixedName):
-    team_members = [tm for tm in team_members if tm.name == fixedName]
+def filter_team_members_by_name(team_members, fixed_name):
+    team_members = [tm for tm in team_members if tm.name == fixed_name]
 
     return team_members
 
@@ -156,21 +155,20 @@ def filter_team_members_by_name(team_members, fixedName):
 def add_comp_table_rows(
     team_members: Iterable[TeamMember], table: PrettyTable, comp_time: str
 ):
-    localTime = get_local_time(comp_time)
+    local_time = get_local_time(comp_time)
 
     for tm in team_members:
-        table.add_row([tm.name, compare_time(localTime, tm.timezone), localTime])
+        table.add_row([tm.name, compare_time(local_time, tm.timezone), local_time])
 
 
 def get_local_time(comp_time):
     now = datetime.now()
-    getHour, getMinute = comp_time.split(":")
-    return datetime(now.year, now.month, now.day, int(getHour), int(getMinute))
+    hour, minute = comp_time.split(":")
+    return datetime(now.year, now.month, now.day, int(hour), int(minute))
 
 
-def compare_time(localTime, staffZone):
-    remoteTime = localTime.astimezone(timezone(staffZone)).strftime("%Y-%m-%d %H:%M")
-    return remoteTime
+def compare_time(local_time, staff_zone):
+    return local_time.astimezone(timezone(staff_zone)).strftime("%Y-%m-%d %H:%M")
 
 
 def add_regular_rows(team_members: Iterable[TeamMember], table: PrettyTable):
