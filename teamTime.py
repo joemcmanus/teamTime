@@ -63,7 +63,6 @@ def main():
     args = parse_args()
 
     exit_if_args_invalid(args)
-
     table = PrettyTable()
 
     team_members = load_team_members_from_file(args.src)
@@ -77,7 +76,6 @@ def main():
         add_comp_table_rows(team_members, table, args.comp)
     else:
         table.field_names = ["Person", "Local Time"]
-
         add_regular_rows(team_members, table)
         table.add_row(["now()", datetime.now().strftime("%Y-%m-%d %H:%M")])
 
@@ -174,9 +172,7 @@ def compareTime(localTime, staffZone):
     return remoteTime
 
 
-def add_regular_rows(
-    team_members: Iterable[TeamMember], table: PrettyTable
-):
+def add_regular_rows(team_members: Iterable[TeamMember], table: PrettyTable):
     for tm in team_members:
         table.add_row([tm.name, tm.time])
 
