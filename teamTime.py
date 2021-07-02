@@ -111,24 +111,7 @@ def add_regular_rows(
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Time Table")
-    parser.add_argument("--name", help="Optional name to search for", action="store")
-    parser.add_argument("--comp", help="Compare times of team members.", action="store")
-    parser.add_argument(
-        "--src",
-        help="Optional src file, defaults to staff.csv",
-        action="store",
-        default="staff.csv",
-    )
-    parser.add_argument("--map", help="Draw map", action="store_true")
-    parser.add_argument(
-        "--sort",
-        help="Field to sort by <time|name>. Defaults to name.",
-        action="store",
-        default="name",
-    )
-    parser.add_argument("--rev", help="Reverse the sort order", action="store_true")
-    args = parser.parse_args()
+    args = parse_args()
 
     if not path.isfile(args.src):
         print("ERROR: Unable to read {}".format(args.src))
@@ -191,6 +174,28 @@ def main():
 
     if args.map:
         show_map()
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Time Table")
+    parser.add_argument("--name", help="Optional name to search for", action="store")
+    parser.add_argument("--comp", help="Compare times of team members.", action="store")
+    parser.add_argument(
+        "--src",
+        help="Optional src file, defaults to staff.csv",
+        action="store",
+        default="staff.csv",
+    )
+    parser.add_argument("--map", help="Draw map", action="store_true")
+    parser.add_argument(
+        "--sort",
+        help="Field to sort by <time|name>. Defaults to name.",
+        action="store",
+        default="name",
+    )
+    parser.add_argument("--rev", help="Reverse the sort order", action="store_true")
+
+    return parser.parse_args()
 
 
 if __name__ == "__main__":
