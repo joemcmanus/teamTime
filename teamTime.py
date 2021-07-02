@@ -116,17 +116,11 @@ def show_map():
 
 
 def build_table_rows(team_members: Iterable[TeamMember], table: PrettyTable) -> List[List]:
-    rows = []
     if args.comp:
         localTime = get_local_time()
-    for tm in team_members:
-        if args.comp:
-            remoteTime = compareTime(localTime, tm.timezone)
-            rows.append([tm.name, remoteTime, localTime])
-        else:
-            rows.append([tm.name, tm.time])
-
-    return rows
+        return [[tm.name, compareTime(localTime, tm.timezone), localTime] for tm in team_members]
+    else:
+        return [[tm.name, tm.time] for tm in team_members]
 
 if not path.isfile(args.src):
     print("ERROR: Unable to read {}".format(args.src))
