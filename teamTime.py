@@ -78,12 +78,15 @@ parser.add_argument("--rev", help="Reverse the sort order", action="store_true")
 args = parser.parse_args()
 
 
-def compareTime(staffZone):
+def compareTime(localTime, staffZone):
+    remoteTime = localTime.astimezone(timezone(staffZone)).strftime("%Y-%m-%d %H:%M")
+    return remoteTime
+
+
+def get_local_time():
     now = datetime.now()
     getHour, getMinute = args.comp.split(":")
-    localTime = datetime(now.year, now.month, now.day, int(getHour), int(getMinute))
-    remoteTime = localTime.astimezone(timezone(staffZone)).strftime("%Y-%m-%d %H:%M")
-    return localTime, remoteTime
+    return datetime(now.year, now.month, now.day, int(getHour), int(getMinute))
 
 
 def show_map():
@@ -114,9 +117,11 @@ def show_map():
 
 def build_table_rows(team_members: Iterable[TeamMember], table: PrettyTable) -> List[List]:
     rows = []
+    if args.comp:
+        localTime = get_local_time()
     for tm in team_members:
         if args.comp:
-            localTime, remoteTime = compareTime(tm.timezone)
+            remoteTime = compareTime(localTime, tm.timezone)
             rows.append([tm.name, remoteTime, localTime])
         else:
             rows.append([tm.name, tm.time])
