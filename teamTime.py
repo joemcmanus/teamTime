@@ -183,12 +183,12 @@ def quit_if_args_invalid(args):
         quit()
 
     if args.comp:
-        pattern = re.compile("\d{1,2}:\d{2}")
+        pattern = re.compile(r"\d{1,2}:\d{2}")
         if not pattern.match(args.comp):
             print("ERROR: Please use 24 hour time format, i.e. --comp 10:00")
             quit()
 
-    if not args.sort in ["name", "time"]:
+    if args.sort not in ["name", "time"]:
         print("ERROR: Please specify a sort argument of 'name' or 'time'")
         quit()
 
@@ -201,7 +201,7 @@ def quit_if_args_invalid(args):
             import pandas as pd
             from geopy.geocoders import Nominatim
             import plotly.graph_objects as go
-        except:
+        except Exception:
             print("Missing mapping libs, try pip3 install pandas plotly geopy")
             quit()
 
