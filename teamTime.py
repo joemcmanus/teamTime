@@ -126,6 +126,7 @@ def exit_if_args_invalid(args):
 
     if args.map:
         try:
+            # These imports are slow. Only import them if the user really needs them.
             global pd
             global Nominatim
             global go
