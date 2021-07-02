@@ -123,12 +123,10 @@ def main():
 
     table.align["Person"] = "l"
 
-    with open(args.src, mode="r", encoding="utf-8", newline="") as infile:
-        reader = csv.reader(infile)
-        team_members = [TeamMember(row) for row in reader]
+    team_members = load_team_members_from_file(args.src)
 
-        if args.name:
-            team_members = [tm for tm in team_members if tm.name == fixedName]
+    if args.name:
+        team_members = [tm for tm in team_members if tm.name == fixedName]
 
     if args.comp:
         table.field_names = ["Person", "Their Time", "Your Time"]
@@ -205,6 +203,14 @@ def exit_if_args_invalid(args):
         except Exception:
             print("Missing mapping libs, try pip3 install pandas plotly geopy")
             sys.exit(1)
+
+
+def load_team_members_from_file(src_file_path):
+    with open(src_file_path, mode="r", encoding="utf-8", newline="") as infile:
+        reader = csv.reader(infile)
+        team_members = [TeamMember(row) for row in reader]
+
+    return team_members
 
 
 if __name__ == "__main__":
