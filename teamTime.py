@@ -157,8 +157,9 @@ def add_comp_table_rows(
     team_members: Iterable[TeamMember], table: PrettyTable, comp_time: str
 ):
     localTime = get_local_time(comp_time)
+
     for tm in team_members:
-        table.add_row([tm.name, compareTime(localTime, tm.timezone), localTime])
+        table.add_row([tm.name, compare_time(localTime, tm.timezone), localTime])
 
 
 def get_local_time(comp_time):
@@ -167,7 +168,7 @@ def get_local_time(comp_time):
     return datetime(now.year, now.month, now.day, int(getHour), int(getMinute))
 
 
-def compareTime(localTime, staffZone):
+def compare_time(localTime, staffZone):
     remoteTime = localTime.astimezone(timezone(staffZone)).strftime("%Y-%m-%d %H:%M")
     return remoteTime
 
