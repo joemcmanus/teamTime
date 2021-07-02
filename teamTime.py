@@ -181,17 +181,17 @@ def parse_args():
 def exit_if_args_invalid(args):
     if not path.isfile(args.src):
         print("ERROR: Unable to read {}".format(args.src))
-        sys.exit()
+        sys.exit(1)
 
     if args.comp:
         pattern = re.compile(r"\d{1,2}:\d{2}")
         if not pattern.match(args.comp):
             print("ERROR: Please use 24 hour time format, i.e. --comp 10:00")
-            sys.exit()
+            sys.exit(1)
 
     if args.sort not in ["name", "time"]:
         print("ERROR: Please specify a sort argument of 'name' or 'time'")
-        sys.exit()
+        sys.exit(1)
 
     if args.map:
         try:
@@ -204,7 +204,7 @@ def exit_if_args_invalid(args):
             import plotly.graph_objects as go
         except Exception:
             print("Missing mapping libs, try pip3 install pandas plotly geopy")
-            sys.exit()
+            sys.exit(1)
 
 
 if __name__ == "__main__":
