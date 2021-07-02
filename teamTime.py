@@ -137,15 +137,7 @@ def main():
         add_regular_rows(team_members, table)
         table.add_row(["now()", datetime.now().strftime("%Y-%m-%d %H:%M")])
 
-    if args.sort == "name":
-        table.sortby = "Person"
-    else:
-        if args.comp:
-            table.sortby = "Their Time"
-        else:
-            table.sortby = "Local Time"
-    if args.rev:
-        table.reversesort = True
+    sort_table(table, args.sort, args.rev)
 
     with open("/dev/stdout", "w", encoding="utf-8") as stdout:
         stdout.write(str(table) + "\n")
@@ -211,6 +203,15 @@ def load_team_members_from_file(src_file_path):
         team_members = [TeamMember(row) for row in reader]
 
     return team_members
+
+
+def sort_table(table, sort_option, rev):
+    if sort_option == "name":
+        table.sortby = table.field_names[0]
+    else:
+        table.sortby = table.field_names[1]
+
+    table.reversesort = rev
 
 
 if __name__ == "__main__":
