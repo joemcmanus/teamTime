@@ -113,31 +113,10 @@ def add_regular_rows(
 def main():
     args = parse_args()
 
-    if not path.isfile(args.src):
-        print("ERROR: Unable to read {}".format(args.src))
-        quit()
-
     if args.name:
         fixedName = args.name.capitalize()
 
-    if args.comp:
-        pattern = re.compile("\d{1,2}:\d{2}")
-        if not pattern.match(args.comp):
-            print("ERROR: Please use 24 hour time format, i.e. --comp 10:00")
-            quit()
-
-    if not args.sort in ["name", "time"]:
-        print("ERROR: Please specify a sort argument of 'name' or 'time'")
-        quit()
-
-    if args.map:
-        try:
-            import pandas as pd
-            from geopy.geocoders import Nominatim
-            import plotly.graph_objects as go
-        except:
-            print("Missing mapping libs, try pip3 install pandas plotly geopy")
-            quit()
+    quit_if_args_invalid(args)
 
     table = PrettyTable()
 
@@ -196,6 +175,35 @@ def parse_args():
     parser.add_argument("--rev", help="Reverse the sort order", action="store_true")
 
     return parser.parse_args()
+
+
+def quit_if_args_invalid(args):
+    if not path.isfile(args.src):
+        print("ERROR: Unable to read {}".format(args.src))
+        quit()
+
+    if args.comp:
+        pattern = re.compile("\d{1,2}:\d{2}")
+        if not pattern.match(args.comp):
+            print("ERROR: Please use 24 hour time format, i.e. --comp 10:00")
+            quit()
+
+    if not args.sort in ["name", "time"]:
+        print("ERROR: Please specify a sort argument of 'name' or 'time'")
+        quit()
+
+    if args.map:
+        try:
+            global pd
+            global Nominatim
+            global go
+
+            import pandas as pd
+            from geopy.geocoders import Nominatim
+            import plotly.graph_objects as go
+        except:
+            print("Missing mapping libs, try pip3 install pandas plotly geopy")
+            quit()
 
 
 if __name__ == "__main__":
