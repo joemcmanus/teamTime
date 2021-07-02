@@ -118,8 +118,6 @@ def main():
 
     table = PrettyTable()
 
-    table.align["Person"] = "l"
-
     team_members = load_team_members_from_file(args.src)
 
     if args.name:
@@ -135,10 +133,11 @@ def main():
         add_regular_rows(team_members, table)
         table.add_row(["now()", datetime.now().strftime("%Y-%m-%d %H:%M")])
 
+
     sort_table(table, args.sort, args.rev)
 
-    with open("/dev/stdout", "w", encoding="utf-8") as stdout:
-        stdout.write(str(table) + "\n")
+    table.align["Person"] = "l"
+    print(table)
 
     if args.map:
         show_map(team_members)
