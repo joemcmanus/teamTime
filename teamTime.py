@@ -115,12 +115,20 @@ def show_map():
     fig.show()
 
 
-def build_table_rows(team_members: Iterable[TeamMember], table: PrettyTable) -> List[List]:
-    if args.comp:
-        localTime = get_local_time()
-        return [[tm.name, compareTime(localTime, tm.timezone), localTime] for tm in team_members]
-    else:
-        return [[tm.name, tm.time] for tm in team_members]
+def add_comp_table_rows(
+    team_members: Iterable[TeamMember], table: PrettyTable
+) -> List[List]:
+    localTime = get_local_time()
+    for tm in team_members:
+        table.add_row([tm.name, compareTime(localTime, tm.timezone), localTime])
+
+
+def add_regular_rows(
+    team_members: Iterable[TeamMember], table: PrettyTable
+) -> List[List]:
+    for tm in team_members:
+        table.add_row([tm.name, tm.time])
+
 
 if not path.isfile(args.src):
     print("ERROR: Unable to read {}".format(args.src))
@@ -149,11 +157,6 @@ if args.map:
         quit()
 
 table = PrettyTable()
-if args.comp:
-    table.field_names = ["Person", "Their Time", "Your Time"]
-else:
-    table.field_names = ["Person", "Local Time"]
-    table.add_row(["now()", datetime.now().strftime("%Y-%m-%d %H:%M")])
 
 table.align["Person"] = "l"
 
@@ -165,10 +168,14 @@ with open(args.src, mode="r", encoding="utf-8", newline="") as infile:
     if args.name:
         team_members = [tm for tm in team_members if tm.name == fixedName]
 
-    rows = build_table_rows(team_members, table)
+if args.comp:
+    table.field_names = ["Person", "Their Time", "Your Time"]
+    add_comp_table_rows(team_members, table)
+else:
+    table.field_names = ["Person", "Local Time"]
 
-    for row in rows:
-        table.add_row(row)
+    add_regular_rows(team_members, table)
+    table.add_row(["now()", datetime.now().strftime("%Y-%m-%d %H:%M")])
 
 if args.sort == "name":
     table.sortby = "Person"
