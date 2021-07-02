@@ -69,7 +69,7 @@ def get_local_time(comp_time):
     return datetime(now.year, now.month, now.day, int(getHour), int(getMinute))
 
 
-def show_map():
+def show_map(team_members):
     team_geo_data = [
         (tm.latitude, tm.longitude, f"{tm.name} {tm.time}") for tm in team_members
     ]
@@ -152,7 +152,7 @@ def main():
         stdout.write(str(table) + "\n")
 
     if args.map:
-        show_map()
+        show_map(team_members)
 
 
 def parse_args():
