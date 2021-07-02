@@ -112,6 +112,17 @@ def show_map():
     fig.show()
 
 
+def build_table_rows(team_members: Iterable[TeamMember], table: PrettyTable) -> List[List]:
+    rows = []
+    for tm in team_members:
+        if args.comp:
+            localTime, remoteTime = compareTime(tm.timezone)
+            rows.append([tm.name, remoteTime, localTime])
+        else:
+            rows.append([tm.name, tm.time])
+
+    return rows
+
 if not path.isfile(args.src):
     print("ERROR: Unable to read {}".format(args.src))
     quit()
@@ -148,15 +159,6 @@ else:
 table.align["Person"] = "l"
 
 
-def build_table_rows(team_members: Iterable[TeamMember], table: PrettyTable):
-    for tm in team_members:
-        if args.comp:
-            localTime, remoteTime = compareTime(tm.timezone)
-            table.add_row([tm.name, remoteTime, localTime])
-        else:
-            table.add_row([tm.name, tm.time])
-
-
 with open(args.src, mode="r", encoding="utf-8", newline="") as infile:
     reader = csv.reader(infile)
     team_members = [TeamMember(row) for row in reader]
@@ -164,7 +166,10 @@ with open(args.src, mode="r", encoding="utf-8", newline="") as infile:
     if args.name:
         team_members = [tm for tm in team_members if tm.name == fixedName]
 
-    build_table_rows(team_members, table)
+    rows = build_table_rows(team_members, table)
+
+    for row in rows:
+        table.add_row(row)
 
 if args.sort == "name":
     table.sortby = "Person"
