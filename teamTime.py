@@ -114,9 +114,6 @@ def add_regular_rows(
 def main():
     args = parse_args()
 
-    if args.name:
-        fixedName = args.name.capitalize()
-
     exit_if_args_invalid(args)
 
     table = PrettyTable()
@@ -126,7 +123,8 @@ def main():
     team_members = load_team_members_from_file(args.src)
 
     if args.name:
-        team_members = [tm for tm in team_members if tm.name == fixedName]
+        fixedName = args.name.capitalize()
+        team_members = filter_team_members_by_name(team_members, fixedName)
 
     if args.comp:
         table.field_names = ["Person", "Their Time", "Your Time"]
@@ -201,6 +199,12 @@ def load_team_members_from_file(src_file_path):
     with open(src_file_path, mode="r", encoding="utf-8", newline="") as infile:
         reader = csv.reader(infile)
         team_members = [TeamMember(row) for row in reader]
+
+    return team_members
+
+
+def filter_team_members_by_name(team_members, fixedName):
+    team_members = [tm for tm in team_members if tm.name == fixedName]
 
     return team_members
 
