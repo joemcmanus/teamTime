@@ -26,6 +26,7 @@ import argparse
 import csv
 import re
 from typing import Iterable, List
+import sys
 
 
 class TeamMember:
@@ -116,7 +117,7 @@ def main():
     if args.name:
         fixedName = args.name.capitalize()
 
-    quit_if_args_invalid(args)
+    exit_if_args_invalid(args)
 
     table = PrettyTable()
 
@@ -177,20 +178,20 @@ def parse_args():
     return parser.parse_args()
 
 
-def quit_if_args_invalid(args):
+def exit_if_args_invalid(args):
     if not path.isfile(args.src):
         print("ERROR: Unable to read {}".format(args.src))
-        quit()
+        sys.exit()
 
     if args.comp:
         pattern = re.compile(r"\d{1,2}:\d{2}")
         if not pattern.match(args.comp):
             print("ERROR: Please use 24 hour time format, i.e. --comp 10:00")
-            quit()
+            sys.exit()
 
     if args.sort not in ["name", "time"]:
         print("ERROR: Please specify a sort argument of 'name' or 'time'")
-        quit()
+        sys.exit()
 
     if args.map:
         try:
@@ -203,7 +204,7 @@ def quit_if_args_invalid(args):
             import plotly.graph_objects as go
         except Exception:
             print("Missing mapping libs, try pip3 install pandas plotly geopy")
-            quit()
+            sys.exit()
 
 
 if __name__ == "__main__":
