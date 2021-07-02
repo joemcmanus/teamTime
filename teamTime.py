@@ -58,34 +58,14 @@ def get_current_formatted_time(staffZone, format_="%Y-%m-%d %H:%M"):
     return staffTime
 
 
-parser = argparse.ArgumentParser(description="Time Table")
-parser.add_argument("--name", help="Optional name to search for", action="store")
-parser.add_argument("--comp", help="Compare times of team members.", action="store")
-parser.add_argument(
-    "--src",
-    help="Optional src file, defaults to staff.csv",
-    action="store",
-    default="staff.csv",
-)
-parser.add_argument("--map", help="Draw map", action="store_true")
-parser.add_argument(
-    "--sort",
-    help="Field to sort by <time|name>. Defaults to name.",
-    action="store",
-    default="name",
-)
-parser.add_argument("--rev", help="Reverse the sort order", action="store_true")
-args = parser.parse_args()
-
-
 def compareTime(localTime, staffZone):
     remoteTime = localTime.astimezone(timezone(staffZone)).strftime("%Y-%m-%d %H:%M")
     return remoteTime
 
 
-def get_local_time():
+def get_local_time(comp_time):
     now = datetime.now()
-    getHour, getMinute = args.comp.split(":")
+    getHour, getMinute = comp_time.split(":")
     return datetime(now.year, now.month, now.day, int(getHour), int(getMinute))
 
 
@@ -116,9 +96,9 @@ def show_map():
 
 
 def add_comp_table_rows(
-    team_members: Iterable[TeamMember], table: PrettyTable
+    team_members: Iterable[TeamMember], table: PrettyTable, comp_time: str
 ) -> List[List]:
-    localTime = get_local_time()
+    localTime = get_local_time(comp_time)
     for tm in team_members:
         table.add_row([tm.name, compareTime(localTime, tm.timezone), localTime])
 
@@ -130,65 +110,88 @@ def add_regular_rows(
         table.add_row([tm.name, tm.time])
 
 
-if not path.isfile(args.src):
-    print("ERROR: Unable to read {}".format(args.src))
-    quit()
+def main():
+    parser = argparse.ArgumentParser(description="Time Table")
+    parser.add_argument("--name", help="Optional name to search for", action="store")
+    parser.add_argument("--comp", help="Compare times of team members.", action="store")
+    parser.add_argument(
+        "--src",
+        help="Optional src file, defaults to staff.csv",
+        action="store",
+        default="staff.csv",
+    )
+    parser.add_argument("--map", help="Draw map", action="store_true")
+    parser.add_argument(
+        "--sort",
+        help="Field to sort by <time|name>. Defaults to name.",
+        action="store",
+        default="name",
+    )
+    parser.add_argument("--rev", help="Reverse the sort order", action="store_true")
+    args = parser.parse_args()
 
-if args.name:
-    fixedName = args.name.capitalize()
-
-if args.comp:
-    pattern = re.compile("\d{1,2}:\d{2}")
-    if not pattern.match(args.comp):
-        print("ERROR: Please use 24 hour time format, i.e. --comp 10:00")
+    if not path.isfile(args.src):
+        print("ERROR: Unable to read {}".format(args.src))
         quit()
-
-if not args.sort in ["name", "time"]:
-    print("ERROR: Please specify a sort argument of 'name' or 'time'")
-    quit()
-
-if args.map:
-    try:
-        import pandas as pd
-        from geopy.geocoders import Nominatim
-        import plotly.graph_objects as go
-    except:
-        print("Missing mapping libs, try pip3 install pandas plotly geopy")
-        quit()
-
-table = PrettyTable()
-
-table.align["Person"] = "l"
-
-
-with open(args.src, mode="r", encoding="utf-8", newline="") as infile:
-    reader = csv.reader(infile)
-    team_members = [TeamMember(row) for row in reader]
 
     if args.name:
-        team_members = [tm for tm in team_members if tm.name == fixedName]
+        fixedName = args.name.capitalize()
 
-if args.comp:
-    table.field_names = ["Person", "Their Time", "Your Time"]
-    add_comp_table_rows(team_members, table)
-else:
-    table.field_names = ["Person", "Local Time"]
-
-    add_regular_rows(team_members, table)
-    table.add_row(["now()", datetime.now().strftime("%Y-%m-%d %H:%M")])
-
-if args.sort == "name":
-    table.sortby = "Person"
-else:
     if args.comp:
-        table.sortby = "Their Time"
+        pattern = re.compile("\d{1,2}:\d{2}")
+        if not pattern.match(args.comp):
+            print("ERROR: Please use 24 hour time format, i.e. --comp 10:00")
+            quit()
+
+    if not args.sort in ["name", "time"]:
+        print("ERROR: Please specify a sort argument of 'name' or 'time'")
+        quit()
+
+    if args.map:
+        try:
+            import pandas as pd
+            from geopy.geocoders import Nominatim
+            import plotly.graph_objects as go
+        except:
+            print("Missing mapping libs, try pip3 install pandas plotly geopy")
+            quit()
+
+    table = PrettyTable()
+
+    table.align["Person"] = "l"
+
+    with open(args.src, mode="r", encoding="utf-8", newline="") as infile:
+        reader = csv.reader(infile)
+        team_members = [TeamMember(row) for row in reader]
+
+        if args.name:
+            team_members = [tm for tm in team_members if tm.name == fixedName]
+
+    if args.comp:
+        table.field_names = ["Person", "Their Time", "Your Time"]
+        add_comp_table_rows(team_members, table, args.comp)
     else:
-        table.sortby = "Local Time"
-if args.rev:
-    table.reversesort = True
+        table.field_names = ["Person", "Local Time"]
 
-with open("/dev/stdout", "w", encoding="utf-8") as stdout:
-    stdout.write(str(table) + "\n")
+        add_regular_rows(team_members, table)
+        table.add_row(["now()", datetime.now().strftime("%Y-%m-%d %H:%M")])
 
-if args.map:
-    show_map()
+    if args.sort == "name":
+        table.sortby = "Person"
+    else:
+        if args.comp:
+            table.sortby = "Their Time"
+        else:
+            table.sortby = "Local Time"
+    if args.rev:
+        table.reversesort = True
+
+    with open("/dev/stdout", "w", encoding="utf-8") as stdout:
+        stdout.write(str(table) + "\n")
+
+    if args.map:
+        show_map()
+
+
+if __name__ == "__main__":
+    main()
