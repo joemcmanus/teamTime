@@ -59,58 +59,6 @@ def get_current_formatted_time(staffZone, format_="%Y-%m-%d %H:%M"):
     return staffTime
 
 
-def compareTime(localTime, staffZone):
-    remoteTime = localTime.astimezone(timezone(staffZone)).strftime("%Y-%m-%d %H:%M")
-    return remoteTime
-
-
-def get_local_time(comp_time):
-    now = datetime.now()
-    getHour, getMinute = comp_time.split(":")
-    return datetime(now.year, now.month, now.day, int(getHour), int(getMinute))
-
-
-def show_map(team_members):
-    team_geo_data = [
-        (tm.latitude, tm.longitude, f"{tm.name} {tm.time}") for tm in team_members
-    ]
-    # Convert lists to Pandas data frames
-    df = pd.DataFrame(team_geo_data, columns=["lat", "lon", "labels"])
-
-    # create the map
-    fig = go.Figure(
-        data=go.Scattergeo(
-            lon=df["lon"],
-            lat=df["lat"],
-            text=df["labels"],
-            mode="markers",
-            marker_size=12,
-            marker_line_width=2,
-        )
-    )
-
-    fig.update_layout(
-        title="Team Time",
-    )
-
-    fig.show()
-
-
-def add_comp_table_rows(
-    team_members: Iterable[TeamMember], table: PrettyTable, comp_time: str
-) -> List[List]:
-    localTime = get_local_time(comp_time)
-    for tm in team_members:
-        table.add_row([tm.name, compareTime(localTime, tm.timezone), localTime])
-
-
-def add_regular_rows(
-    team_members: Iterable[TeamMember], table: PrettyTable
-) -> List[List]:
-    for tm in team_members:
-        table.add_row([tm.name, tm.time])
-
-
 def main():
     args = parse_args()
 
@@ -132,7 +80,6 @@ def main():
 
         add_regular_rows(team_members, table)
         table.add_row(["now()", datetime.now().strftime("%Y-%m-%d %H:%M")])
-
 
     sort_table(table, args.sort, args.rev)
 
@@ -208,6 +155,32 @@ def filter_team_members_by_name(team_members, fixedName):
     return team_members
 
 
+def add_comp_table_rows(
+    team_members: Iterable[TeamMember], table: PrettyTable, comp_time: str
+):
+    localTime = get_local_time(comp_time)
+    for tm in team_members:
+        table.add_row([tm.name, compareTime(localTime, tm.timezone), localTime])
+
+
+def get_local_time(comp_time):
+    now = datetime.now()
+    getHour, getMinute = comp_time.split(":")
+    return datetime(now.year, now.month, now.day, int(getHour), int(getMinute))
+
+
+def compareTime(localTime, staffZone):
+    remoteTime = localTime.astimezone(timezone(staffZone)).strftime("%Y-%m-%d %H:%M")
+    return remoteTime
+
+
+def add_regular_rows(
+    team_members: Iterable[TeamMember], table: PrettyTable
+):
+    for tm in team_members:
+        table.add_row([tm.name, tm.time])
+
+
 def sort_table(table, sort_option, rev):
     if sort_option == "name":
         table.sortby = table.field_names[0]
@@ -215,6 +188,32 @@ def sort_table(table, sort_option, rev):
         table.sortby = table.field_names[1]
 
     table.reversesort = rev
+
+
+def show_map(team_members):
+    team_geo_data = [
+        (tm.latitude, tm.longitude, f"{tm.name} {tm.time}") for tm in team_members
+    ]
+    # Convert lists to Pandas data frames
+    df = pd.DataFrame(team_geo_data, columns=["lat", "lon", "labels"])
+
+    # create the map
+    fig = go.Figure(
+        data=go.Scattergeo(
+            lon=df["lon"],
+            lat=df["lat"],
+            text=df["labels"],
+            mode="markers",
+            marker_size=12,
+            marker_line_width=2,
+        )
+    )
+
+    fig.update_layout(
+        title="Team Time",
+    )
+
+    fig.show()
 
 
 if __name__ == "__main__":
