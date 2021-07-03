@@ -18,7 +18,7 @@ Questions/Feedback/Feature Requests? Please let me know.
 
 #Installation 
 ----
-The simplest way to install teamtime is to use the snap
+The simplest way to install teamTime is to use the snap
 
     sudo snap install teamtime 
 
@@ -32,8 +32,8 @@ Otherwise clone the repo and install the dependencies pandas, plotly, prettytabl
 # Usage 
 ----
 
-    ./teamTime.py --help 
-    usage: teamTime.py [-h] [--name NAME] [--src SRC] [--map]
+    ./teamtime.py --help 
+    usage: teamtime.py [-h] [--name NAME] [--src SRC] [--map]
     
     Time Table
     
@@ -44,7 +44,7 @@ Otherwise clone the repo and install the dependencies pandas, plotly, prettytabl
       --src SRC    Optional src file, defaults to staff.csv
       --map        Draw map	
 
-To simply print a table of your team run ./teamTime.py
+To simply print a table of your team run ./teamtime.py
 
     +---------+------------------+
     |  Person |    Local Time    |
@@ -58,7 +58,7 @@ To simply print a table of your team run ./teamTime.py
     |  now()  | 2019-09-25 10:16 |
     +---------+------------------+
 
-To search for just Bob run ./teamTime.py --name=Bob
+To search for just Bob run ./teamtime.py --name=Bob
 
     +--------+------------------+
     | Person |    Local Time    |
@@ -68,14 +68,14 @@ To search for just Bob run ./teamTime.py --name=Bob
 
 To convert a local time to another time in a person's time zone use --comp. This helps when you are trying to figure out when to schedule a call.
 
-    $ ./teamTime.py --name=andy --comp=15:00 
+    $ ./teamtime.py --name=andy --comp=15:00 
     +--------+------------------+---------------------+
     | Person |    Their Time    |      Your Time      |
     +--------+------------------+---------------------+
     |  Andy  | 2019-10-18 07:30 | 2019-10-17 15:00:00 |
     +--------+------------------+---------------------+
 
-To create a map run ./teamTime.py --map 
+To create a map run ./teamtime.py --map 
 
 ![alt_tag](https://github.com/joemcmanus/teamTime/blob/master/map.png)
 

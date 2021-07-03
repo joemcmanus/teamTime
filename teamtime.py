@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# File    : teamTime.py
+# File    : teamtime.py
 # Author  : Joe McManus josephmc@alumni.cmu.edu
 # Version : 0.6  10/17/2019 Joe McManus
 # Copyright (C) 2019 Joe McManus
