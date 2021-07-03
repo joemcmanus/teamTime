@@ -139,8 +139,8 @@ def get_local_time(comp_time: str) -> datetime:
     return datetime(now.year, now.month, now.day, int(hour), int(minute))
 
 
-def compare_time(local_time: datetime, staff_zone: str) -> str:
-    return local_time.astimezone(timezone(staff_zone)).strftime("%Y-%m-%d %H:%M")
+def compare_time(local_time: datetime, time_zone: str) -> str:
+    return local_time.astimezone(timezone(time_zone)).strftime("%Y-%m-%d %H:%M")
 
 
 def add_regular_rows(team_members: Iterable[TeamMember], table: PrettyTable):

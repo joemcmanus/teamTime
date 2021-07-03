@@ -29,5 +29,5 @@ class TeamMember:
         return self._location.longitude
 
 
-def _get_current_formatted_time(staff_zone: str, format_="%Y-%m-%d %H:%M": str) -> str:
-    return datetime.now(timezone(staff_zone)).strftime(format_)
+def _get_current_formatted_time(time_zone: str, format_: str = "%Y-%m-%d %H:%M") -> str:
+    return datetime.now(timezone(time_zone)).strftime(format_)
