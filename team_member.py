@@ -21,13 +21,13 @@ class TeamMember:
         return self._geo_location
 
     @property
-    def latitude(self):
+    def latitude(self) -> float:
         return self._location.latitude
 
     @property
-    def longitude(self):
+    def longitude(self) -> float:
         return self._location.longitude
 
 
-def _get_current_formatted_time(staff_zone, format_="%Y-%m-%d %H:%M"):
+def _get_current_formatted_time(staff_zone: str, format_="%Y-%m-%d %H:%M": str) -> str:
     return datetime.now(timezone(staff_zone)).strftime(format_)

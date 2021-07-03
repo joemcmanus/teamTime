@@ -25,7 +25,7 @@ from os import path
 import argparse
 import csv
 import re
-from typing import Iterable
+from typing import Iterable, List
 import sys
 from team_member import TeamMember
 
@@ -59,7 +59,7 @@ def main():
         show_map(team_members)
 
 
-def parse_args():
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Time Table")
     parser.add_argument("--name", help="Optional name to search for", action="store")
     parser.add_argument("--comp", help="Compare times of team members.", action="store")
@@ -81,7 +81,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def exit_if_args_invalid(args):
+def exit_if_args_invalid(args: argparse.Namespace):
     if not path.isfile(args.src):
         print("ERROR: Unable to read {}".format(args.src))
         sys.exit(1)
@@ -110,7 +110,7 @@ def exit_if_args_invalid(args):
             sys.exit(1)
 
 
-def load_team_members_from_file(src_file_path):
+def load_team_members_from_file(src_file_path: str) -> List[TeamMember]:
     with open(src_file_path, mode="r", encoding="utf-8", newline="") as infile:
         reader = csv.reader(infile)
         team_members = [TeamMember(row) for row in reader]
@@ -118,7 +118,7 @@ def load_team_members_from_file(src_file_path):
     return team_members
 
 
-def filter_team_members_by_name(team_members, fixed_name):
+def filter_team_members_by_name(team_members: List[TeamMember], fixed_name: str) -> List[TeamMember]:
     team_members = [tm for tm in team_members if tm.name == fixed_name]
 
     return team_members
@@ -133,13 +133,13 @@ def add_comp_table_rows(
         table.add_row([tm.name, compare_time(local_time, tm.timezone), local_time])
 
 
-def get_local_time(comp_time):
+def get_local_time(comp_time: str) -> datetime:
     now = datetime.now()
     hour, minute = comp_time.split(":")
     return datetime(now.year, now.month, now.day, int(hour), int(minute))
 
 
-def compare_time(local_time, staff_zone):
+def compare_time(local_time: datetime, staff_zone: str) -> str:
     return local_time.astimezone(timezone(staff_zone)).strftime("%Y-%m-%d %H:%M")
 
 
@@ -148,7 +148,7 @@ def add_regular_rows(team_members: Iterable[TeamMember], table: PrettyTable):
         table.add_row([tm.name, tm.time])
 
 
-def sort_table(table, sort_option, rev):
+def sort_table(table: PrettyTable, sort_option: str, rev: bool):
     if sort_option == "name":
         table.sortby = table.field_names[0]
     else:
@@ -157,7 +157,7 @@ def sort_table(table, sort_option, rev):
     table.reversesort = rev
 
 
-def show_map(team_members):
+def show_map(team_members: List[TeamMember]):
     team_geo_data = [
         (tm.latitude, tm.longitude, f"{tm.name} {tm.time}") for tm in team_members
     ]
