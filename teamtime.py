@@ -25,37 +25,9 @@ from os import path
 import argparse
 import csv
 import re
-from typing import Iterable, List
+from typing import Iterable
 import sys
-
-
-class TeamMember:
-    def __init__(self, csv_row: List):
-        self.name = csv_row[0]
-        self.timezone = csv_row[1]
-        self.time = get_current_formatted_time(self.timezone)
-        self.city = csv_row[2].strip()
-        self._geo_location = None
-
-    @property
-    def _location(self):
-        if self._geo_location is None:
-            geolocator = Nominatim(user_agent="teamTime")
-            self._geo_location = geolocator.geocode(self.city)
-
-        return self._geo_location
-
-    @property
-    def latitude(self):
-        return self._location.latitude
-
-    @property
-    def longitude(self):
-        return self._location.longitude
-
-
-def get_current_formatted_time(staff_zone, format_="%Y-%m-%d %H:%M"):
-    return datetime.now(timezone(staff_zone)).strftime(format_)
+from team_member import TeamMember
 
 
 def main():
@@ -128,7 +100,6 @@ def exit_if_args_invalid(args):
         try:
             # These imports are slow. Only import them if the user really needs them.
             global pd
-            global Nominatim
             global go
 
             import pandas as pd
