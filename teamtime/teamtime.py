@@ -27,7 +27,7 @@ import csv
 import re
 from typing import Iterable, List
 import sys
-from team_member import TeamMember
+from teamtime.team_member import TeamMember
 
 
 def main():
