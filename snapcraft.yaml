@@ -10,7 +10,7 @@ base: core20
 
 apps:
   teamtime:
-    command: teamtime.py
+    command: bin/teamtime
     environment: 
        XAUTHORITY: $HOME/.Xauthority
     plugs:
@@ -23,17 +23,6 @@ apps:
 parts:
   teamtime:
     plugin: python
-    python-packages:
-      - matplotlib
-      - pandas
-      - pandas-ext
-      - geopy
-      - plotly
-      - pytz
-      - prettytable
+    source: .
     stage-packages:
       - dbus-x11
-
-  teamtime-script:
-    plugin: dump
-    source: .
