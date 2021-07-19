@@ -5,7 +5,7 @@ description: |
  A script to keep track of time for globally distributed team.
 grade: stable
 confinement: strict
-base: core18
+base: core20
 
 
 apps:
