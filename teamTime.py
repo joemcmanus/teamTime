@@ -31,7 +31,7 @@ import re
 
 parser = argparse.ArgumentParser(description='Time Table')
 parser.add_argument('--name', help="Optional name to search for", action="store")
-parser.add_argument('--comp', help="Compare times, use name and comp together", action="store")
+parser.add_argument('--comp', help="Compare times of team members.", action="store")
 parser.add_argument('--src', help="Optional src file, defaults to staff.csv", action="store", default="staff.csv")
 parser.add_argument('--map', help="Draw map", action="store_true")
 parser.add_argument('--sort', help="Field to sort by <time|name>. Defaults to name.", action="store", default="name")
@@ -104,28 +104,31 @@ with open(args.src, mode='r', encoding='utf-8', newline='') as infile:
         staffTime=makeTime(row[0], row[1])
         staffCity=row[2].strip()
         staffZone=row[1]
-        if args.name:
-            if fixedName == staffName:
-                if not args.comp:
-                    table.add_row([staffName, staffTime])
-                if args.comp:
-                    localTime, remoteTime=compareTime(staffZone)
-                    table.add_row([staffName, remoteTime, localTime])
-        else:
-            table.add_row([staffName, staffTime])
+
         if args.map:
             latitude, longitude=getLocation(staffCity)
             staffLat.append(latitude)
             staffLon.append(longitude)
             labels.append(staffName + " " + staffTime)
 
-if not args.comp:
-    if args.sort == 'name':
-        table.sortby = 'Person'
+        if args.name and fixedName != staffName:
+            continue
+
+        if args.comp:
+            localTime, remoteTime=compareTime(staffZone)
+            table.add_row([staffName, remoteTime, localTime])
+        else:
+            table.add_row([staffName, staffTime])
+
+if args.sort == 'name':
+    table.sortby = 'Person'
+else:
+    if args.comp:
+        table.sortby = 'Their Time'
     else:
         table.sortby = 'Local Time'
-    if args.rev:
-        table.reversesort = True
+if args.rev:
+    table.reversesort = True
 
 with open('/dev/stdout', 'w', encoding='utf-8') as stdout:
     stdout.write(str(table) + '\n')
