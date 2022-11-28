@@ -103,7 +103,6 @@ def exit_if_args_invalid(args: argparse.Namespace):
             global go
 
             import pandas as pd
-            from geopy.geocoders import Nominatim
             import plotly.graph_objects as go
         except Exception:
             print("Missing mapping libs, try pip3 install pandas plotly geopy")
