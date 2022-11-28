@@ -1,0 +1,17 @@
+[flake8]
+## Warn about linter issues.
+
+show-source = True
+max-complexity = 10
+max-line-length = 100
+per-file-ignores = __init__.py:F401
+
+### ignore "whitespace before ':'", "line break before binary operator" for
+### compatibility with black
+extend-ignore = E203, W503
+
+### --statistics Count the number of occurrences of each error/warning code and print a report.
+statistics = True
+
+### --count will print the total number of errors.
+count = True
