@@ -17,7 +17,7 @@ paths = ["teamtime"]
 
 [tool.poetry]
 name = "teamtime"
-version = "v2.0.0"
+version = "v2.0.0.post1"
 description = "A tool for keeping track of staff in multiple timezones"
 authors = ["Joe McManus <josephmc@alumni.cmu.edu>", "Mike Salvatore <mike.s.salvatore@gmail.com>"]
 license = "GPLv3"
@@ -42,3 +42,6 @@ prettytable = "^3.5.0"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+teamtime = "teamtime.teamtime:main"
