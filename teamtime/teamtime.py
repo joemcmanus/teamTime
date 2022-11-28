@@ -18,15 +18,17 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from datetime import datetime
-from pytz import timezone
-from prettytable import PrettyTable
-from os import path
 import argparse
 import csv
 import re
-from typing import Iterable, List
 import sys
+from datetime import datetime
+from os import path
+from typing import Iterable, List
+
+from prettytable import PrettyTable
+from pytz import timezone
+
 from teamtime.team_member import TeamMember
 
 
@@ -117,15 +119,15 @@ def load_team_members_from_file(src_file_path: str) -> List[TeamMember]:
     return team_members
 
 
-def filter_team_members_by_name(team_members: List[TeamMember], fixed_name: str) -> List[TeamMember]:
+def filter_team_members_by_name(
+    team_members: List[TeamMember], fixed_name: str
+) -> List[TeamMember]:
     team_members = [tm for tm in team_members if tm.name == fixed_name]
 
     return team_members
 
 
-def add_comp_table_rows(
-    team_members: Iterable[TeamMember], table: PrettyTable, comp_time: str
-):
+def add_comp_table_rows(team_members: Iterable[TeamMember], table: PrettyTable, comp_time: str):
     local_time = get_local_time(comp_time)
 
     for tm in team_members:
@@ -157,9 +159,7 @@ def sort_table(table: PrettyTable, sort_option: str, rev: bool):
 
 
 def show_map(team_members: List[TeamMember]):
-    team_geo_data = [
-        (tm.latitude, tm.longitude, f"{tm.name} {tm.time}") for tm in team_members
-    ]
+    team_geo_data = [(tm.latitude, tm.longitude, f"{tm.name} {tm.time}") for tm in team_members]
     # Convert lists to Pandas data frames
     df = pd.DataFrame(team_geo_data, columns=["lat", "lon", "labels"])
 
