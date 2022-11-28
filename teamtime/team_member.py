@@ -1,6 +1,8 @@
 from datetime import datetime
 from typing import List
+
 from pytz import timezone
+
 
 class TeamMember:
     def __init__(self, csv_row: List):
@@ -14,6 +16,7 @@ class TeamMember:
     def _location(self):
         # This import is slow. Only import it if you need it.
         from geopy.geocoders import Nominatim
+
         if self._geo_location is None:
             geolocator = Nominatim(user_agent="teamTime")
             self._geo_location = geolocator.geocode(self.city)
