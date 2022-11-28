@@ -1,4 +1,3 @@
-Note: As of 10/13 I asked in the snapcraft forum to have the ownership of the snap changed to joesecurity . Thanks for checking roadmr.
 
 # teamTime
 ----
